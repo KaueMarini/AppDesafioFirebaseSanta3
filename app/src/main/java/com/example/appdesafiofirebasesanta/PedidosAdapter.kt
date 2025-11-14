@@ -1,13 +1,20 @@
 package com.example.appdesafiofirebasesanta
 
 import android.view.LayoutInflater
+import android.view.View
 import android.view.ViewGroup
+import android.widget.AdapterView
+import android.widget.ArrayAdapter
 import androidx.recyclerview.widget.RecyclerView
 import com.example.appdesafiofirebasesanta.databinding.ItemPedidoBinding
 import com.google.firebase.firestore.FirebaseFirestore
 
+class PedidosAdapter(
+    private val pedidos: List<Pedido>
+) : RecyclerView.Adapter<PedidosAdapter.PedidoViewHolder>() {
 
-class PedidosAdapter(private val pedidos: List<Pedido>) : RecyclerView.Adapter<PedidosAdapter.PedidoViewHolder>() {
+
+    private val statusOptions = listOf("Pendente", "Em preparo", "Pronto pra entrega", "Entregue")
 
     inner class PedidoViewHolder(val binding: ItemPedidoBinding) :
         RecyclerView.ViewHolder(binding.root)
@@ -26,27 +33,43 @@ class PedidosAdapter(private val pedidos: List<Pedido>) : RecyclerView.Adapter<P
 
         holder.binding.tvDescricaoPedido.text = pedido.descricao
         holder.binding.tvNomeUsuario.text = "Cliente: ${pedido.nomeUsuario}"
-        holder.binding.tvStatusPedido.text = pedido.status
+
+        val spinnerAdapter = ArrayAdapter(
+            holder.itemView.context,
+            android.R.layout.simple_spinner_item,
+            statusOptions
+        ).also { adapter ->
+            adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
+        }
+        holder.binding.spinnerStatus.adapter = spinnerAdapter
 
 
-        if (pedido.status == "Pendente") {
-            holder.binding.tvStatusPedido.setBackgroundColor(
-                holder.itemView.context.getColor(android.R.color.holo_red_light)
-            )
-            holder.binding.root.setOnClickListener {
+        val currentStatusPosition = statusOptions.indexOf(pedido.status).coerceAtLeast(0)
 
-                val db = FirebaseFirestore.getInstance()
-                pedido.id?.let { id ->
-                    db.collection("pedidos").document(id)
-                        .update("status", "Entregue")
+
+        holder.binding.spinnerStatus.setSelection(currentStatusPosition, false)
+
+
+        holder.binding.spinnerStatus.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
+            override fun onItemSelected(parent: AdapterView<*>?, view: View?, pos: Int, id: Long) {
+                val novoStatus = statusOptions[pos]
+
+
+                if (novoStatus != pedido.status) {
+                    val db = FirebaseFirestore.getInstance()
+                    pedido.id?.let { pedidoId ->
+                        db.collection("pedidos").document(pedidoId)
+                            .update("status", novoStatus)
+
+                    }
                 }
             }
-        } else {
-            holder.binding.tvStatusPedido.setBackgroundColor(
-                holder.itemView.context.getColor(android.R.color.holo_green_light)
-            )
-            holder.binding.root.setOnClickListener(null)
+
+            override fun onNothingSelected(parent: AdapterView<*>?) {
+
+            }
         }
+
     }
 
     override fun getItemCount(): Int {

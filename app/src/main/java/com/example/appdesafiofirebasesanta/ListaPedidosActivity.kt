@@ -49,7 +49,6 @@ class ListaPedidosActivity : AppCompatActivity() {
 
         db.collection("pedidos")
             .whereEqualTo("restauranteId", restauranteId)
-            .orderBy("status", Query.Direction.ASCENDING)
             .addSnapshotListener { snapshot, e ->
 
                 if (e != null) {
@@ -60,7 +59,6 @@ class ListaPedidosActivity : AppCompatActivity() {
                 if (snapshot != null) {
                     listaDePedidos.clear()
                     for (document in snapshot.documents) {
-
                         val pedido = document.toObject<Pedido>()
                         if (pedido != null) {
                             listaDePedidos.add(pedido)
