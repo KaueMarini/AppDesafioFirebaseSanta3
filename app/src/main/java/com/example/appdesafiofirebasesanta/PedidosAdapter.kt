@@ -45,7 +45,7 @@ class PedidosAdapter(private val pedidos: List<Pedido>) : RecyclerView.Adapter<P
             holder.binding.tvStatusPedido.setBackgroundColor(
                 holder.itemView.context.getColor(android.R.color.holo_green_light)
             )
-            holder.binding.root.setOnClickListener(null) // Remove o clique se já foi entregue
+            holder.binding.root.setOnClickListener(null)
         }
     }
 
