@@ -73,14 +73,20 @@ class CadastroUsuarioActivity : AppCompatActivity() {
 
                 db.collection("usuarios").document(uid).set(usuario)
                     .addOnSuccessListener {
-                        Toast.makeText(this, "Cadastro realizado com sucesso!", Toast.LENGTH_SHORT).show()
+                        Toast.makeText(this, "Cadastro realizado com sucesso!", Toast.LENGTH_SHORT)
+                            .show()
                         finish()
                     }
                     .addOnFailureListener { e ->
-                        Toast.makeText(this, "Erro ao salvar dados: ${e.message}", Toast.LENGTH_SHORT).show()
+                        Toast.makeText(
+                            this,
+                            "Erro ao salvar dados: ${e.message}",
+                            Toast.LENGTH_SHORT
+                        ).show()
                     }
             }
             .addOnFailureListener { e ->
                 Toast.makeText(this, "Erro ao criar conta: ${e.message}", Toast.LENGTH_SHORT).show()
             }
     }
+}

@@ -6,7 +6,8 @@ import androidx.recyclerview.widget.RecyclerView
 import com.example.appdesafiofirebasesanta.databinding.ItemPedidoBinding
 import com.google.firebase.firestore.FirebaseFirestore
 
-class PedidosAdapter( private val pedidos: List ) : RecyclerView.Adapter<PedidosAdapter.PedidoViewHolder>() {
+
+class PedidosAdapter(private val pedidos: List<Pedido>) : RecyclerView.Adapter<PedidosAdapter.PedidoViewHolder>() {
 
     inner class PedidoViewHolder(val binding: ItemPedidoBinding) :
         RecyclerView.ViewHolder(binding.root)
